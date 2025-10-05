@@ -1,5 +1,21 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+/* app/globals.css */
+
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Agar custom animation duration chahiye */
+.animate-spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+.animate-spin-slower {
+  animation: spin 4s linear infinite;
+}
 
 @custom-variant dark (&:is(.dark *));
 
