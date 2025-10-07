@@ -8,7 +8,11 @@ export const auth = betterAuth({
   emailAndPassword: {
     // ye line hamne isiliye likha hai n jisese hum alow kr diye hai hum apne auth ke andar email and password credential ka set-up bhi kr sekte hai
     enabled: true,
+
   },
+  // rateLimit:{ // ! Bhai sahab apko mai ek baat bta du yeha per ki ratelimiter kabhi bhi serverless Enviornment ke case mein work nhi krta hai ,kyuki ye by deafult ratelimit apne appilcation ke  memory mein hi store hota hai
+  //   storage:"database"
+  // },
   session: {
     cookieCache: {
       enabled: true, // aur hamne yeha manully cookies ko enbled kiya hai ye bhi seekh gya ye bhi mujhe nhi ata tha ,and i personally fell ki better auth se authentication itna easy hai ki mai explain nhi kaar sakta hu 👀✅⭐
