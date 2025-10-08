@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { LogIn, LogOut, Sparkles, Shield, Zap } from "lucide-react";
+import BetterAuthActionButton from "@/components/auth/better-auth-action-button";
 
 const Home = () => {
   const { data: session, isPending: loading } = authClient.useSession();
@@ -140,15 +141,29 @@ const Home = () => {
 
                 {/* Action Buttons */}
                 <div className="flex justify-center">
-                  <Button
+                  <BetterAuthActionButton
                     size="lg"
                     variant="outline"
-                    onClick={() => authClient.signOut()}
+                    successMessage="Successfully signed out"
+                    action={async () => {
+                      try {
+                        await authClient.signOut();
+                        return { error: null };
+                      } catch (error: any) {
+                        return {
+                          error: {
+                            message:
+                              error?.message ||
+                              "Failed to sign out. Please try again.",
+                          },
+                        };
+                      }
+                    }}
                     className="bg-red-500/10 border-red-500/40 text-red-400 hover:bg-red-500/20 hover:border-red-400 hover:text-red-300 font-semibold px-8 py-6 text-lg rounded-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 group cursor-pointer hover:shadow-lg hover:shadow-red-500/30"
                   >
                     <LogOut className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
                     Sign Out
-                  </Button>
+                  </BetterAuthActionButton>
                 </div>
               </div>
             </div>

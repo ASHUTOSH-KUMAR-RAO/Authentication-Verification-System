@@ -1,28 +1,37 @@
 import { betterAuth } from "better-auth";
-
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "@/drizzle/db"; // your drizzle instance
+import { db } from "@/drizzle/db";
 import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
-  emailAndPassword: {
-    // ye line hamne isiliye likha hai n jisese hum alow kr diye hai hum apne auth ke andar email and password credential ka set-up bhi kr sekte hai
-    enabled: true,
+  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
 
+  emailAndPassword: {
+    enabled: true,
   },
-  // rateLimit:{ // ! Bhai sahab apko mai ek baat bta du yeha per ki ratelimiter kabhi bhi serverless Enviornment ke case mein work nhi krta hai ,kyuki ye by deafult ratelimit apne appilcation ke  memory mein hi store hota hai
-  //   storage:"database"
-  // },
-  session: {
-    cookieCache: {
-      enabled: true, // aur hamne yeha manully cookies ko enbled kiya hai ye bhi seekh gya ye bhi mujhe nhi ata tha ,and i personally fell ki better auth se authentication itna easy hai ki mai explain nhi kaar sakta hu 👀✅⭐
-      maxAge: 60 * 5, // Iska mtlb hua user apne cookies ko only 5 minutes taak hi dekh sakta hai jieses wo confirm kr sakte hai ki wo successfully login to ho gya hai n
+
+  socialProviders: {
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!, // ✅ Fixed variable name
+    },
+    discord: {
+      clientId: process.env.DISCORD_CLIENT_ID!, // ✅ Fixed typo
+      clientSecret: process.env.DISCORD_CLIENT_SECRET!, // ✅ Fixed variable name
     },
   },
 
-  plugins:[nextCookies()], // basically ye confirm krta hai ki kya mera next js ka jo app hai wo cookies ko set kr raha hai ya nhi ,(aur haan ye saab kaam hi server side per hi ho raha hai mtlb ki jaab maine uper baat kiya tha n signup /sign in to ye mai apne server side per login /signout ki baat kr raha tha abhi client side per kuch nhi kaar raha hai )
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5,
+    },
+  },
+
+  plugins: [nextCookies()],
+
   database: drizzleAdapter(db, {
-    provider: "pg", // or "mysql", "sqlite"
+    provider: "pg",
   }),
 });
 

@@ -19,6 +19,7 @@ import { LoadingSwap } from "@/components/ui/loading-swap";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import SocialAuthButton from "./social-auth-button";
 
 const signUpSchema = z.object({
   name: z.string().min(4),
@@ -133,6 +134,7 @@ export const SignUpTab = () => {
             </span>
           </LoadingSwap>
         </Button>
+        <SocialAuthButton/>
       </form>
     </Form>
   );
