@@ -2,36 +2,85 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { SignInTab } from "./components/sign-in-tab";
 import { SignUpTab } from "./components/sign-up-tab ";
-
+import { Volume2, VolumeX } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import {  useRouter } from "next/navigation";
 
 // Video Background Component
-const VideoBackground = ({ videoUrl }: { videoUrl: string }) => {
+const VideoBackground = ({
+  videoUrl,
+  isMuted,
+  onMuteToggle,
+}: {
+  videoUrl: string;
+  isMuted: boolean;
+  onMuteToggle: () => void;
+}) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = isMuted;
+    }
+  }, [isMuted]);
+
   return (
     <>
       <video
+        ref={videoRef}
         autoPlay
         loop
-        muted
+        muted={isMuted}
         playsInline
         className="fixed inset-0 w-full h-full object-cover z-0"
       >
         <source src={videoUrl} type="video/mp4" />
       </video>
       <div className="fixed inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/80 backdrop-blur-sm z-0" />
+
+      {/* Music Control Button */}
+      <button
+        onClick={onMuteToggle}
+        className="fixed top-6 right-6 z-30 bg-black/40 backdrop-blur-xl border border-white/20 hover:bg-black/60 hover:border-white/40 text-white p-3 rounded-full transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg"
+        aria-label={isMuted ? "Unmute" : "Mute"}
+      >
+        {isMuted ? (
+          <VolumeX className="w-5 h-5" />
+        ) : (
+          <Volume2 className="w-5 h-5" />
+        )}
+      </button>
     </>
   );
 };
 
 const LoginPage = () => {
   const [activeTab, setActiveTab] = useState("signin");
+  const [isMuted, setIsMuted] = useState(true);
+
+  const handleMuteToggle = () => {
+    setIsMuted(!isMuted);
+  };
+
+  const router = useRouter()
+
+  useEffect(() => {
+    authClient.getSession().then((session) => {
+      if (session.data != null) router.push("/");
+    });
+  }, [router]);
 
   return (
     <div className="fixed inset-0 w-full h-full overflow-auto">
       {/* Video Background */}
-      <VideoBackground videoUrl="https://videos.pexels.com/video-files/8128311/8128311-uhd_2560_1440_25fps.mp4" />
+      <VideoBackground
+        videoUrl="/VDIO.mp4"
+        isMuted={isMuted}
+        onMuteToggle={handleMuteToggle}
+      />
 
       {/* Content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
